@@ -2,9 +2,8 @@ name: Midnight Sweep Cloud Check
 
 on:
   schedule:
-    # Runs at 5 minutes past every hour (gives the 1H candle time to fully close)
     - cron: "5 * * * *"
-  workflow_dispatch: {}   # lets you also trigger it manually to test
+  workflow_dispatch: {}
 
 jobs:
   check-sweep:
@@ -26,4 +25,4 @@ jobs:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          run: python sweep_check.py
+        run: python sweep_check.py
