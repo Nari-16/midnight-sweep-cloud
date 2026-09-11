@@ -38,14 +38,20 @@ def get_candles():
         "outputsize": 3,  # last 3 candles is enough (current forming + 2 closed)
         "apikey": TWELVE_DATA_API_KEY,
     }
-    resp = requests.get(url, params=params, timeout=15)
-    data = resp.json()
 
-    if "values" not in data:
-        raise RuntimeError(f"Unexpected API response: {data}")
+    last_error = None
+    for attempt in range(2):  # try twice before giving up
+        try:
+            resp = requests.get(url, params=params, timeout=30)
+            data = resp.json()
+            if "values" not in data:
+                raise RuntimeError(f"Unexpected API response: {data}")
+            return data["values"]
+        except Exception as e:
+            last_error = e
+            print(f"Attempt {attempt + 1} failed: {e}")
 
-    # Twelve Data returns most recent first
-    return data["values"]
+    raise last_error
 
 
 def send_telegram(message: str):
@@ -94,3 +100,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+  
